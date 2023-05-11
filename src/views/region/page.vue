@@ -5,7 +5,7 @@
         <el-card v-loading="treeLoading">
           <el-input v-model="treeFilterText" placeholder="输入关键字进行过滤" />
           <div style="margin: 10px" />
-          <el-tree ref="tree" :filter-node-method="filterNode" :data="treeData" :props="treeProps" empty-text="暂无数据" @node-click="treeClick" />
+          <el-tree ref="tree" :filter-node-method="filterNode" node-key="id" :data="treeData" :props="treeProps" :default-expanded-keys="defaultKeys" empty-text="暂无数据" @node-click="treeClick" />
         </el-card>
       </el-col>
       <el-col :span="16">
@@ -24,20 +24,20 @@
             <el-form-item label="父区划名称：">
               <el-input v-model="detailData.parentName" class="form-width" disabled />
             </el-form-item>
-            <el-form-item label="区划编号：">
+            <el-form-item label="区划编号：" required>
               <el-input v-model="detailData.smailCode" class="form-width">
                 <template slot="prepend">{{ detailData.parentCode }}</template>
               </el-input>
             </el-form-item>
-            <el-form-item label="区划名称：">
+            <el-form-item label="区划名称：" required>
               <el-input v-model="detailData.name" class="form-width" />
             </el-form-item>
-            <el-form-item label="区划等级：">
+            <el-form-item label="区划等级：" required>
               <el-radio-group v-model="detailData.regionLevel">
                 <el-radio v-for="item in levelData" :key="item.label" :label="item.label">{{ item.value }}</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="区划排序：">
+            <el-form-item label="区划排序：" required>
               <el-input-number v-model="detailData.sort" controls-position="right" class="form-width" :min="0" />
             </el-form-item>
             <el-form-item label="区划备注：">
@@ -61,6 +61,7 @@ import { Message } from 'element-ui'
 export default {
   data() {
     return {
+      defaultKeys: [],
       treeFilterText: '',
       treeProps: {
         children: 'children',
@@ -81,9 +82,7 @@ export default {
       },
       detalLoading: false,
       loading: false,
-      levelData: [
-        { label: '1', value: '国家' }
-      ]
+      levelData: [{ label: '1', value: '国家' }]
     }
   },
   watch: {
@@ -102,26 +101,31 @@ export default {
     // 刷新树的数据
     refreshTree() {
       this.treeLoading = true
-      tree().then((res) => {
-        this.treeData = res.data
-      }).finally(() => {
-        this.treeLoading = false
-      })
+      tree()
+        .then((res) => {
+          this.treeData = res.data
+        })
+        .finally(() => {
+          this.treeLoading = false
+          this.defaultKeys = [this.detailData.code]
+        })
     },
     // 刷新详情数据
     refreshDetail(id) {
       this.detalLoading = true
-      detail({ code: id }).then((res) => {
-        const data = res.data
-        for (const key in this.detailData) {
-          this.detailData[key] = data[key]
-        }
-        const code = this.detailData.code
-        const parentCode = this.detailData.parentCode
-        this.detailData.smailCode = code.replace(parentCode, '')
-      }).finally(() => {
-        this.detalLoading = false
-      })
+      detail({ code: id })
+        .then((res) => {
+          const data = res.data
+          for (const key in this.detailData) {
+            this.detailData[key] = data[key]
+          }
+          const code = this.detailData.code
+          const parentCode = this.detailData.parentCode
+          this.detailData.smailCode = code.replace(parentCode, '')
+        })
+        .finally(() => {
+          this.detalLoading = false
+        })
     },
     // 树被点击
     treeClick(data) {
@@ -132,7 +136,6 @@ export default {
       for (const key in this.detailData) {
         this.detailData[key] = ''
       }
-      this.refreshTree()
     },
     // 新增加下级
     addChild() {
@@ -158,12 +161,14 @@ export default {
       const detailData = this.detailData
       detailData.code = code
       this.loading = true
-      submit(detailData).then((res) => {
-        this.refreshDetail(code)
-        this.refreshTree()
-      }).finally(() => {
-        this.loading = false
-      })
+      submit(detailData)
+        .then((res) => {
+          this.refreshDetail(code)
+          this.refreshTree()
+        })
+        .finally(() => {
+          this.loading = false
+        })
     },
     remove() {
       const code = this.detailData.code
