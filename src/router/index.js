@@ -130,6 +130,26 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   {
+    path: '/base',
+    component: Layout,
+    redirect: '/base/page',
+    alwaysShow: true,
+    name: 'base',
+    meta: {
+      title: '基础配置'
+    },
+    children: [
+      {
+        path: 'region',
+        component: () => import('@/views/region/page'),
+        name: 'region',
+        meta: {
+          title: '行政区划'
+        }
+      }
+    ]
+  },
+  {
     path: '/permission',
     component: Layout,
     redirect: '/permission/page',

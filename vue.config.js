@@ -32,6 +32,23 @@ module.exports = {
   devServer: {
     port: port,
     open: true,
+    proxy: {
+      '/dev-api/api': {
+        target: 'http://localhost:8080', // 要代理的本地api地址，也可以换成线上测试地址
+        changeOrigin: true, // 允许跨域
+        pathRewrite: { '^/dev-api/api': '/' }, // 将/api开头替换为/api
+        onProxyReq: function(proxyReq, req, res, options) {
+          if (req.body) {
+            const bodyData = JSON.stringify(req.body)
+            // incase if content-type is application/x-www-form-urlencoded -> we need to change to application/json
+            proxyReq.setHeader('Content-Type', 'application/json')
+            proxyReq.setHeader('Content-Length', Buffer.byteLength(bodyData))
+            // stream the content
+            proxyReq.write(bodyData)
+          }
+        }
+      }
+    },
     overlay: {
       warnings: false,
       errors: true
