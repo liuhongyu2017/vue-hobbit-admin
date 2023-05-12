@@ -172,9 +172,17 @@ export default {
     },
     remove() {
       const code = this.detailData.code
-      remove({ ids: code }).then((res) => {
-        this.refreshTree()
-        this.clear()
+      this.$confirm('确认删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        remove({ ids: code }).then((res) => {
+          this.refreshTree()
+          this.clear()
+        })
+      }).catch(() => {
+
       })
     }
   }
