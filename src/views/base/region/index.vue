@@ -9,28 +9,28 @@
         </el-card>
       </el-col>
       <el-col :span="16">
-        <el-card class="form-card">
+        <el-card>
           <el-button-group>
             <el-button icon="el-icon-circle-plus-outline" type="primary" size="small" @click="addChild">新增下级</el-button>
             <el-button icon="el-icon-delete" type="primary" size="small" @click="remove">删除</el-button>
           </el-button-group>
         </el-card>
         <div style="margin: 10px" />
-        <el-card v-loading="detalLoading" class="form-card">
-          <el-form :inline="true" label-width="110px" label-position="right">
+        <el-card v-loading="detalLoading">
+          <el-form label-width="110px" label-position="right">
             <el-form-item label="父区划编号：">
-              <el-input v-model="detailData.parentCode" class="form-width" disabled />
+              <el-input v-model="detailData.parentCode" disabled />
             </el-form-item>
             <el-form-item label="父区划名称：">
-              <el-input v-model="detailData.parentName" class="form-width" disabled />
+              <el-input v-model="detailData.parentName" disabled />
             </el-form-item>
             <el-form-item label="区划编号：" required>
-              <el-input v-model="detailData.smailCode" class="form-width">
+              <el-input v-model="detailData.smailCode">
                 <template slot="prepend">{{ detailData.parentCode }}</template>
               </el-input>
             </el-form-item>
             <el-form-item label="区划名称：" required>
-              <el-input v-model="detailData.name" class="form-width" />
+              <el-input v-model="detailData.name" />
             </el-form-item>
             <el-form-item label="区划等级：" required>
               <el-radio-group v-model="detailData.regionLevel">
@@ -38,10 +38,10 @@
               </el-radio-group>
             </el-form-item>
             <el-form-item label="区划排序：" required>
-              <el-input-number v-model="detailData.sort" controls-position="right" class="form-width" :min="0" />
+              <el-input-number v-model="detailData.sort" controls-position="right" :min="0" style="width: 100%;" />
             </el-form-item>
             <el-form-item label="区划备注：">
-              <el-input v-model="detailData.remark" class="form-width" type="textarea" :rows="4" />
+              <el-input v-model="detailData.remark" type="textarea" :rows="4" />
             </el-form-item>
           </el-form>
           <el-row type="flex" justify="center" align="middle">
@@ -176,23 +176,17 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        remove({ ids: code }).then((res) => {
-          this.refreshTree()
-          this.clear()
-        })
-      }).catch(() => {
-
       })
+        .then(() => {
+          remove({ ids: code }).then((res) => {
+            this.refreshTree()
+            this.clear()
+          })
+        })
+        .catch(() => {})
     }
   }
 }
 </script>
 <style scoped>
-.form-width {
-  width: 500px;
-}
-.form-card {
-  width: 700px;
-}
 </style>

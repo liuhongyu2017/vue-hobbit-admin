@@ -132,7 +132,6 @@ export const asyncRoutes = [
   {
     path: '/base',
     component: Layout,
-    redirect: '/base/page',
     alwaysShow: true,
     name: 'base',
     meta: {
@@ -141,10 +140,69 @@ export const asyncRoutes = [
     children: [
       {
         path: 'region',
-        component: () => import('@/views/region/page'),
+        component: () => import('@/views/base/region/index'),
         name: 'region',
         meta: {
           title: '行政区划'
+        }
+      }
+    ]
+  },
+  {
+    path: '/system',
+    component: Layout,
+    alwaysShow: true,
+    name: 'base',
+    meta: {
+      title: '系统管理'
+    },
+    children: [
+      {
+        path: 'user',
+        component: () => import('@/views/system/user/index'),
+        name: 'user',
+        meta: {
+          title: '用户管理'
+        }
+      },
+      {
+        path: 'dept',
+        component: () => import('@/views/system/dept/index'),
+        name: 'dept',
+        meta: {
+          title: '部门管理'
+        }
+      },
+      {
+        path: 'post',
+        component: () => import('@/views/system/post/index'),
+        name: 'post',
+        meta: {
+          title: '岗位管理'
+        }
+      },
+      {
+        path: 'dict',
+        component: () => import('@/views/system/dict/index'),
+        name: 'dict',
+        meta: {
+          title: '系统字典'
+        }
+      },
+      {
+        path: 'dict_biz',
+        component: () => import('@/views/system/dictBiz/index'),
+        name: 'dict_biz',
+        meta: {
+          title: '业务字典'
+        }
+      },
+      {
+        path: 'menu',
+        component: () => import('@/views/system/menu/index'),
+        name: 'menu',
+        meta: {
+          title: '菜单管理'
         }
       }
     ]
